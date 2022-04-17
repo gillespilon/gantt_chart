@@ -11,7 +11,6 @@ import pandas as pd
 
 
 def main():
-    # data for the example, comment out when using csv file
     data = {
         "start": ["2021-11-01", "2021-11-03", "2021-11-04", "2021-11-08"],
         "end": ["2021-11-08", "2021-11-16", "2021-11-11", "2021-11-13"],
@@ -19,7 +18,7 @@ def main():
     }
     columns = ["task", "start", "end", "duration", "start_relative"]
     graph_file = Path("gantt_chart.svg")
-    # data_file = Path('gantt_chart.csv'), uncomment to use csv file
+    # data_file = Path('gantt_chart.csv')
     data_types = {
         "start": "datetime64[ns]", "end": "datetime64[ns]", "task": "str"
     }
@@ -28,29 +27,22 @@ def main():
     y_axis_label = "tasks"
     x_axis_label = "date"
     ds.style_graph()
-    # uncomment when using csv filee
     # df = ds.read_file(
     #     file_name=data_file,
     #     parse_dates=["start", "end"]
     # )
     df = (pd.DataFrame(data=data)).astype(dtype=data_types)
-    # create duration of tasks, dtype = 'int64'
     df[columns[3]] = (df[columns[2]] - df[columns[1]]).dt.days + 1
-    # sort start dates in ascending order
     df = df.sort_values(by=[columns[1]], axis=0, ascending=[True])
-    # create project variables
     start = df[columns[1]].min()
     end = df[columns[2]].max()
     duration = (end - start).days + 1
-    # create xticks and labels
     x_ticks = [x for x in range(duration + 1)]
     x_labels = [
         f"{(start + datetime.timedelta(days=x)):%Y-%m-%d}"
         for x in x_ticks
     ]
-    # create relative start column, dtype = 'int64'
     df[columns[4]] = (df[columns[1]] - start).dt.days
-    # plot Gantt chart
     fig, ax = ds.plot_horizontal_bars(
         y=df[columns[0]], width=df[columns[3]], left=df[columns[4]]
     )
@@ -62,6 +54,7 @@ def main():
     ax.set_title(label=ax_title)
     ax.set_ylabel(ylabel=y_axis_label)
     ax.set_xlabel(xlabel=x_axis_label)
+    ax.grid(axis='x', alpha=0.25)
     fig.savefig(fname=graph_file, bbox_inches='tight')
     print(df)
 

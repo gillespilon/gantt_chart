@@ -69,13 +69,6 @@ def main():
         ticks=x_ticks
     )
     ax.set_xticklabels(labels=x_labels, rotation=45)
-    mid = (fig.subplotpars.right + fig.subplotpars.left) / 2
-    fig.suptitle(
-        t=fig_title,
-        horizontalalignment='center',
-        verticalalignment='top',
-        x=mid
-    )
     ax.grid(
         axis='x',
         alpha=0.25

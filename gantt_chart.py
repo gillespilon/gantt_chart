@@ -36,6 +36,7 @@ def main():
     #     file_name=data_file,
     #     parse_dates=parse_dates
     # )
+    ds.style_graph()
     df = (pd.DataFrame(data=data)).astype(dtype=data_types)
     # create duration of tasks, dtype = 'int64'
     df[columns[3]] = (df[columns[2]] - df[columns[1]]).dt.days + 1
@@ -68,12 +69,12 @@ def main():
         ticks=x_ticks
     )
     ax.set_xticklabels(labels=x_labels, rotation=45)
+    mid = (fig.subplotpars.right + fig.subplotpars.left) / 2
     fig.suptitle(
         t=fig_title,
         horizontalalignment='center',
         verticalalignment='top',
-        fontsize=15,
-        fontweight='bold'
+        x=mid
     )
     ax.grid(
         axis='x',
@@ -84,20 +85,14 @@ def main():
         loc='center',
         horizontalalignment='center',
         verticalalignment='top',
-        fontsize=12,
-        fontweight='semibold'
     )
     ax.set_ylabel(
         ylabel=y_axis_label,
         loc='center',
-        fontsize=12,
-        fontweight='semibold'
     )
     ax.set_xlabel(
         xlabel=x_axis_label,
         loc='center',
-        fontsize=12,
-        fontweight='semibold'
     )
     fig.savefig(
         fname=graph_file,

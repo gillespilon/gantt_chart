@@ -6,7 +6,6 @@ Create Gantt chart with csv file of tasks and dates
 from pathlib import Path
 import datetime
 
-import matplotlib.axes as axes
 import datasense as ds
 import pandas as pd
 
@@ -21,7 +20,6 @@ def main():
     columns = ["task", "start", "end", "duration", "start_relative"]
     graph_file = Path("gantt_chart.svg")
     # data_file = Path('gantt_chart.csv'), uncomment to use csv file
-    parse_dates = ["start", "end"]
     data_types = {
         "start": "datetime64[ns]", "end": "datetime64[ns]", "task": "str"
     }
@@ -29,12 +27,12 @@ def main():
     ax_title = "axes title"
     y_axis_label = "tasks"
     x_axis_label = "date"
+    ds.style_graph()
     # uncomment when using csv filee
     # df = ds.read_file(
     #     file_name=data_file,
-    #     parse_dates=parse_dates
+    #     parse_dates=["start", "end"]
     # )
-    ds.style_graph()
     df = (pd.DataFrame(data=data)).astype(dtype=data_types)
     # create duration of tasks, dtype = 'int64'
     df[columns[3]] = (df[columns[2]] - df[columns[1]]).dt.days + 1
@@ -47,7 +45,7 @@ def main():
     # create xticks and labels
     x_ticks = [x for x in range(duration + 1)]
     x_labels = [
-        (start + datetime.timedelta(days=x)).strftime("%Y-%m-%d")
+        f"{(start + datetime.timedelta(days=x)):%Y-%m-%d}"
         for x in x_ticks
     ]
     # create relative start column, dtype = 'int64'
@@ -59,10 +57,12 @@ def main():
     ax.invert_yaxis()
     ax.set_xticks(ticks=x_ticks)
     ax.set_xticklabels(labels=x_labels, rotation=45)
+    mid = (fig.subplotpars.right + fig.subplotpars.left) / 2
+    fig.suptitle(t=fig_title, x=mid)
     ax.set_title(label=ax_title)
     ax.set_ylabel(ylabel=y_axis_label)
     ax.set_xlabel(xlabel=x_axis_label)
-    fig.savefig(fname=graph_file)
+    fig.savefig(fname=graph_file, bbox_inches='tight')
     print(df)
 
 
